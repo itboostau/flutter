@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "567338381439",
+    "firebase_url": "https://itboost-36cff.firebaseio.com",
+    "project_id": "itboost-36cff",
+    "storage_bucket": "itboost-36cff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567338381439:android:ef587f452abfe20b7ccf4a",
+        "android_client_info": {
+          "package_name": "com.itboost"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "567338381439-iu4dardvl02e5ukrgd1ojf8m9nku9ov0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUmpdwuUAu3gLK2l6xoQw_84QdSMTCj40"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "567338381439-iu4dardvl02e5ukrgd1ojf8m9nku9ov0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
