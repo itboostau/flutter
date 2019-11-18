@@ -56,31 +56,33 @@ class _PostScreenState extends State<PostScreen> {
           builder: (ctx, result) {
             print(result);
             if (result.hasData) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Image.network(
-                    "${result.data[0].source}",
-                    width: double.infinity,
-                  ),
-                  SizedBox(
-                    height: 11.0,
-                  ),
-                  Text(
-                    "${result.data[0].title}",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline
-                        .apply(color: MyColors.magenta),
-                  ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Html(
-                    data: "${result.data[0].description}",
-                    useRichText: true,
-                  ),
-                ],
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Image.network(
+                      "${result.data[0].source}",
+                      width: double.infinity,
+                    ),
+                    SizedBox(
+                      height: 11.0,
+                    ),
+                    Text(
+                      "${result.data[0].title}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline
+                          .apply(color: MyColors.magenta),
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    Html(
+                      data: "${result.data[0].description}",
+                      useRichText: true,
+                    ),
+                  ],
+                ),
               );
             } else {
               return Center(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum BlogPostType { seo, website, apps }
-
+enum Status {done, loading, error}
 class MyColors {
   static Color orange = Color(0xffe2ad4d),
       magenta = Color(0xff35142a),

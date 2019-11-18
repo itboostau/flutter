@@ -1,9 +1,11 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:itboost/models/pagemodel.dart';
+import 'package:itboost/models/postlistconsumer.dart';
 import 'package:itboost/ui/screens/screens.dart';
-import 'package:itboost/ui/screens/test.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:provider/provider.dart';
 
 import 'global.dart';
 
@@ -37,12 +39,6 @@ class HomeApp extends StatefulWidget {
 }
 
 class _HomeAppState extends State<HomeApp> {
-  int _active = 0;
-  final _myScreens = [
-    HomeScreen(),
-    CategoriesScreen(),
-    PostListScreen(),
-  ];
   @override
   void initState() {
     super.initState();
@@ -57,6 +53,28 @@ class _HomeAppState extends State<HomeApp> {
 
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<PageModel>(
+          builder: (_) => PageModel(),
+        ),
+        ChangeNotifierProvider<PostListConsumer>(
+          builder: (_) => PostListConsumer(),
+        )
+      ],
+      child: MainScaffold(),
+    );
+  }
+}
+
+class MainScaffold extends StatelessWidget {
+  final _myScreens = [
+    HomeScreen(),
+    CategoriesScreen(),
+    PostListScreen(),
+  ];
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -69,9 +87,10 @@ class _HomeAppState extends State<HomeApp> {
               BoxDecoration(shape: BoxShape.circle, color: MyColors.orange),
         ),
         onPressed: () {
-          setState(() {
-            _active = 1;
-          });
+          // setState(() {
+          // });
+          Provider.of<PageModel>(context, listen: false)
+              .changePage(pageId: 1, categoryId: -1);
         },
       ),
       bottomNavigationBar: BottomAppBar(
@@ -87,24 +106,31 @@ class _HomeAppState extends State<HomeApp> {
                 color: MyColors.darkGrey,
               ),
               onPressed: () {
-                setState(() {
-                  _active = 0;
-                });
+                // setState(() {
+                //   _active = 0;
+                // });
+                Provider.of<PageModel>(context, listen: false)
+                    .changePage(pageId: 0, categoryId: -1);
               },
             ),
             IconButton(
               icon: Icon(Icons.menu, color: MyColors.darkGrey),
               onPressed: () {
-                setState(() {
-                  _active = 2;
-                });
+                Provider.of<PageModel>(context, listen: false)
+                    .changePage(pageId: 2, categoryId: -1);
+                Provider.of<PostListConsumer>(context, listen: false).getPostList(-1);
               },
             ),
           ],
         ),
       ),
       body: SafeArea(
-        child: _myScreens[_active],
+        child: Consumer<PageModel>(
+          builder: (ctx, page, _) {
+            return _myScreens[page.page];
+          },
+          child: _myScreens[0],
+        ),
       ),
     );
   }

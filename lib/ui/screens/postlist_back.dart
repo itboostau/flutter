@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:itboost/global.dart';
 import 'package:itboost/models/pagemodel.dart';
-import 'package:itboost/models/postlistconsumer.dart';
 import 'package:itboost/models/postlistmodel.dart';
 import 'package:itboost/ui/screens/post.dart';
 import 'package:itboost/ui/widgets/blog_post_container.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class PostListScreen extends StatelessWidget {
+  const PostListScreen({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -81,19 +84,58 @@ class PostListScreen extends StatelessWidget {
   }
 }
 
+Future<List<PostList>> _getPostList(int categoryId) async {
+  String _postsUrl;
+  if (categoryId != -1) {
+    _postsUrl = "https://itboost.com.au/api/category/$categoryId";
+  } else {
+    _postsUrl = 'https://itboost.com.au/api/articles';
+  }
+  final response = await http.get(_postsUrl);
+  if (response.statusCode == 200) {
+    final parsed = json.decode(response.body).cast<Map<String, dynamic>>();
+
+    return parsed.map<PostList>((json) => PostList.fromJson(json)).toList();
+  } else {
+    // If that response was not OK, throw an error.
+    throw Exception('Failed to load post');
+  }
+}
+
 class PostsListWidget extends StatefulWidget {
+  const PostsListWidget({
+    Key key,
+  }) : super(key: key);
+
   @override
   _PostsListWidgetState createState() => _PostsListWidgetState();
 }
 
 class _PostsListWidgetState extends State<PostsListWidget> {
+  Future<List<PostList>> post;
+  @override
+  void initState() {
+    super.initState();
+    int categoryId =
+        Provider.of<PageModel>(context, listen: false).categoryId;
+    print("$categoryId");
+    if (categoryId == null) {
+      post = _getPostList(null);
+    } else {
+      post = _getPostList(categoryId);
+    }
+  }
+  
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<PostListConsumer>(
-      builder: (context, result, _) {
-        if (result.status == Status.done) {
+    return FutureBuilder<List<PostList>>(
+      future: post,
+      builder: (ctx, result) {
+        print(result);
+        if (result.hasData) {
           return ListView.builder(
-            itemCount: result.postList.length,
+            itemCount: result.data.length,
             shrinkWrap: true,
             itemBuilder: (ctx, i) {
               return BlogPostContainer(
@@ -101,34 +143,20 @@ class _PostsListWidgetState extends State<PostsListWidget> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (ctx) => PostScreen(
-                              articleId: result.postList[i].articleId)));
+                          builder: (ctx) =>
+                              PostScreen(articleId: result.data[i].articleId)));
                 },
-                category: "${result.postList[i].articleCategory}",
-                title: "${result.postList[i].title}",
-                imgUrl: "${result.postList[i].source}",
+                category: "${result.data[i].articleCategory}",
+                title: "${result.data[i].title}",
+                imgUrl: "${result.data[i].source}",
                 type: BlogPostType.seo,
-                date: "${result.postList[i].updatedDate}",
+                date: "${result.data[i].updatedDate}",
               );
             },
           );
-        } else if (result.status == Status.loading) {
+        } else {
           return Center(
             child: CircularProgressIndicator(),
-          );
-        } else if (result.status == Status.error) {
-          return Center(
-            child: Column(
-              children: <Widget>[
-                Text("Error"),
-                RaisedButton(
-                  child: Text("Try Again"),
-                  onPressed: () {
-                    result.getPostList(Provider.of<PageModel>(context, listen: false).categoryId);
-                  },
-                )
-              ],
-            ),
           );
         }
       },

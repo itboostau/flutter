@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:itboost/global.dart';
 import 'package:http/http.dart' as http;
 import 'package:itboost/models/categoriesmodel.dart';
+import 'package:itboost/models/pagemodel.dart';
+import 'package:itboost/models/postlistconsumer.dart';
 import 'package:itboost/ui/screens/postlist.dart';
+import 'package:provider/provider.dart';
 
 Future<List<Categories>> _getCategories() async {
   final response = await http.get('https://itboost.com.au/api/category');
@@ -75,27 +78,7 @@ class __ListCategoriesWidgetState extends State<_ListCategoriesWidget> {
       future: _categories,
       builder: (ctx, result) {
         if (result.hasData) {
-          print("I got data");
-          return ListView(
-            children: List.generate(
-              result.data.length,
-              (i) {
-                return CategoryContainer(
-                  itemCount: result.data[i].articles,
-                  title: "${result.data[i].title}",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (ctx) => PostListScreen(
-                            categoryId: result.data[i].id.toString()),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          );
+          return CategoriesListWidget(result: result);
         } else {
           print("I got no data");
           return Center(
@@ -103,6 +86,42 @@ class __ListCategoriesWidgetState extends State<_ListCategoriesWidget> {
           );
         }
       },
+    );
+  }
+}
+
+class CategoriesListWidget extends StatelessWidget {
+  final result;
+  const CategoriesListWidget({
+    Key key,
+    this.result,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: List.generate(
+        result.data.length,
+        (i) {
+          return CategoryContainer(
+            itemCount: result.data[i].articles,
+            title: "${result.data[i].title}",
+            onTap: () {
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (ctx) => PostListScreen(
+              //         categoryId: result.data[i].id.toString()),
+              //   ),
+              // );
+              Provider.of<PageModel>(context, listen: false)
+                  .changePage(pageId: 2, categoryId: result.data[i].id);
+              Provider.of<PostListConsumer>(context, listen: false)
+                  .getPostList(result.data[i].id);
+            },
+          );
+        },
+      ),
     );
   }
 }
