@@ -43,7 +43,7 @@ class _HomeAppState extends State<HomeApp> {
   void initState() {
     super.initState();
 
-    OneSignal.shared.init("5a0bd6e8-7024-460c-84d6-9cd1f45ac62c", iOSSettings: {
+    OneSignal.shared.init("284c3838-be62-41ea-80ee-0267bb956346", iOSSettings: {
       OSiOSSettings.autoPrompt: true,
       OSiOSSettings.inAppLaunchUrl: true
     });
@@ -87,42 +87,47 @@ class MainScaffold extends StatelessWidget {
               BoxDecoration(shape: BoxShape.circle, color: MyColors.orange),
         ),
         onPressed: () {
-          // setState(() {
-          // });
           Provider.of<PageModel>(context, listen: false)
               .changePage(pageId: 1, categoryId: -1);
         },
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin: 7.0,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.home,
-                color: MyColors.darkGrey,
-              ),
-              onPressed: () {
-                // setState(() {
-                //   _active = 0;
-                // });
-                Provider.of<PageModel>(context, listen: false)
-                    .changePage(pageId: 0, categoryId: -1);
-              },
+      bottomNavigationBar: Consumer<PageModel>(
+        builder: (ctx, _pageModel, _) {
+          return BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            notchMargin: 7.0,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.home,
+                    color: _pageModel.page == 0
+                        ? MyColors.orange
+                        : MyColors.darkGrey,
+                  ),
+                  onPressed: () {
+                    _pageModel.changePage(pageId: 0, categoryId: -1);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    color: _pageModel.page == 2
+                        ? MyColors.orange
+                        : MyColors.darkGrey,
+                  ),
+                  onPressed: () {
+                    _pageModel.changePage(pageId: 2, categoryId: -1);
+                    Provider.of<PostListConsumer>(context, listen: false)
+                        .getPostList(-1);
+                  },
+                ),
+              ],
             ),
-            IconButton(
-              icon: Icon(Icons.menu, color: MyColors.darkGrey),
-              onPressed: () {
-                Provider.of<PageModel>(context, listen: false)
-                    .changePage(pageId: 2, categoryId: -1);
-                Provider.of<PostListConsumer>(context, listen: false).getPostList(-1);
-              },
-            ),
-          ],
-        ),
+          );
+        },
       ),
       body: SafeArea(
         child: Consumer<PageModel>(

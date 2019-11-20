@@ -91,7 +91,8 @@ class _PostListContainerWidgetState
         future: post,
         builder: (ctx, result) {
           if (result.hasData)
-            return PageView.builder(
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
               itemCount: result.data.length,
               itemBuilder: (BuildContext context, int index) {
                 return BlogPostContainer(

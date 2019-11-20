@@ -20,7 +20,8 @@ class BlogPostContainer extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: MediaQuery.of(context).size.height / 2.5,
+        width: MediaQuery.of(context).size.width * .7,
+        height: MediaQuery.of(context).size.width *.7,
         margin: EdgeInsets.all(15.0),
         decoration: BoxDecoration(
           border: Border.all(color: MyColors.blue),

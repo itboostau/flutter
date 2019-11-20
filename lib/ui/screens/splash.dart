@@ -26,30 +26,35 @@ class _SplashScreenState extends State<SplashScreen> {
       body: SafeArea(
         child: Container(
           width: double.infinity,
+          height: MediaQuery.of(context).size.height / 2.5,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Image.asset(
                 "assets/logo.png",
-                width: 51,
-                height: 51,
+                width: 71,
+                height: 71,
               ),
               SizedBox(
                 height: 15.0,
               ),
-              Text(
-                "IT BOOST AUSTRALIA",
-                style: Theme.of(context)
-                    .textTheme
-                    .title
-                    .apply(color: MyColors.magenta),
-              ),
-              Text(
-                "itboost.com.au",
-                style: Theme.of(context)
-                    .textTheme
-                    .title
-                    .apply(color: Color(0xff5e352c)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    "IT BOOST AUSTRALIA",
+                    style: Theme.of(context)
+                        .textTheme
+                        .title
+                        .apply(color: MyColors.magenta),
+                  ),
+                  Text(
+                    "itboost.com.au",
+                    style: Theme.of(context).textTheme.title.apply(
+                          color: Color(0xff5e352c),
+                        ),
+                  )
+                ],
               )
             ],
           ),
